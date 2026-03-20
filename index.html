@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script referrerpolicy="no-referrer-when-downgrade" src="https://dev.visualwebsiteoptimizer.com/cloud-run-test/final/3000235.js" id="vwoCode"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>QA TestLab — Feature Testing Ground</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3d;
+    --accent: #00e5ff;
+    --accent2: #ff3cac;
+    --accent3: #7b5ea7;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --success: #00ff9d;
+    --error: #ff4d6d;
+    --warning: #ffb700;
+    --font-head: 'Syne', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 56px;
+  }
+  .nav-logo {
+    font-family: var(--font-head);
+    font-size: 1.1rem; font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--accent2); }
+  .nav-links { display: flex; gap: 0.25rem; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.75rem; padding: 0.4rem 0.75rem;
+    border-radius: 4px; transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--accent); background: rgba(0,229,255,0.08);
+  }
+  .nav-user {
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .nav-badge {
+    background: var(--accent2); color: #fff;
+    font-size: 0.65rem; padding: 2px 8px; border-radius: 20px;
+    font-weight: 700; letter-spacing: 0.05em;
+  }
+  .nav-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 700; cursor: pointer;
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; padding-top: 56px; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ── HERO / HOME ── */
+  #page-home {
+    display: none;
+    background: radial-gradient(ellipse at 20% 50%, rgba(0,229,255,0.05) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(255,60,172,0.05) 0%, transparent 60%),
+                var(--bg);
+  }
+  #page-home.active { display: block; }
+
+  .hero {
+    min-height: calc(100vh - 56px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 4rem 2rem;
+    position: relative;
+  }
+  .hero-tag {
+    font-size: 0.7rem; letter-spacing: 0.2em; color: var(--accent);
+    border: 1px solid rgba(0,229,255,0.3); padding: 4px 14px;
+    border-radius: 20px; margin-bottom: 2rem;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero h1 {
+    font-family: var(--font-head); font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800; line-height: 1.05;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero h1 .cyan { color: var(--accent); }
+  .hero h1 .pink { color: var(--accent2); }
+  .hero-sub {
+    margin-top: 1.25rem; color: var(--muted);
+    font-size: 0.9rem; max-width: 520px; line-height: 1.7;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-actions {
+    display: flex; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 0.65rem 1.5rem; border-radius: 6px;
+    font-family: var(--font-mono); font-size: 0.8rem;
+    font-weight: 700; letter-spacing: 0.05em;
+    cursor: pointer; border: none; transition: all 0.2s;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .btn-primary {
+    background: var(--accent); color: #000;
+  }
+  .btn-primary:hover { background: #33eaff; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,229,255,0.3); }
+  .btn-secondary {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger { background: var(--error); color: #fff; }
+  .btn-danger:hover { background: #ff6b85; }
+  .btn-success { background: var(--success); color: #000; }
+  .btn-success:hover { background: #33ffb0; }
+  .btn-sm { padding: 0.4rem 1rem; font-size: 0.72rem; }
+  .btn-full { width: 100%; justify-content: center; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+  /* ── CARDS ── */
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--accent3); transform: translateY(-2px); }
+  .card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+  .card-title {
+    font-family: var(--font-head); font-weight: 600;
+    font-size: 1rem; margin-bottom: 0.4rem;
+  }
+  .card-desc { color: var(--muted); font-size: 0.78rem; line-height: 1.6; }
+
+  /* ── SECTION ── */
+  .section { padding: 3rem 2rem; max-width: 1100px; margin: 0 auto; }
+  .section-header { margin-bottom: 2rem; }
+  .section-tag {
+    font-size: 0.68rem; letter-spacing: 0.2em; color: var(--accent2);
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .section-title {
+    font-family: var(--font-head); font-size: 1.8rem; font-weight: 800;
+  }
+  .section-sub { color: var(--muted); font-size: 0.8rem; margin-top: 0.4rem; }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 3rem;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+  .stat {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 1rem 1.5rem; text-align: center; flex: 1; min-width: 120px;
+    background: var(--surface);
+  }
+  .stat-val { font-family: var(--font-head); font-size: 1.6rem; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 0.68rem; color: var(--muted); margin-top: 2px; letter-spacing: 0.1em; }
+
+  /* ── LOGIN PAGE ── */
+  .auth-wrap {
+    min-height: calc(100vh - 56px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem;
+    background: radial-gradient(ellipse at center, rgba(123,94,167,0.08) 0%, transparent 70%);
+  }
+  .auth-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 2.5rem; width: 100%; max-width: 420px;
+  }
+  .auth-logo { text-align: center; margin-bottom: 2rem; }
+  .auth-logo h2 { font-family: var(--font-head); font-size: 1.4rem; font-weight: 800; }
+  .auth-logo p { color: var(--muted); font-size: 0.78rem; margin-top: 4px; }
+
+  .tabs { display: flex; background: var(--bg); border-radius: 8px; padding: 3px; margin-bottom: 1.5rem; }
+  .tab-btn {
+    flex: 1; padding: 0.5rem; border: none; background: transparent;
+    color: var(--muted); font-family: var(--font-mono); font-size: 0.78rem;
+    cursor: pointer; border-radius: 6px; transition: all 0.2s; font-weight: 700;
+  }
+  .tab-btn.active { background: var(--surface2); color: var(--accent); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .form-group { margin-bottom: 1rem; }
+  .form-label { display: block; font-size: 0.72rem; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.05em; }
+  .form-input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.65rem 0.9rem; color: var(--text);
+    font-family: var(--font-mono); font-size: 0.82rem;
+    transition: border-color 0.2s; outline: none;
+  }
+  .form-input:focus { border-color: var(--accent); }
+  .form-input.error { border-color: var(--error); }
+  .form-input.success { border-color: var(--success); }
+  .form-error { font-size: 0.7rem; color: var(--error); margin-top: 4px; display: none; }
+  .form-error.show { display: block; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .checkbox-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+  .checkbox-row input { accent-color: var(--accent); }
+  .checkbox-row label { font-size: 0.75rem; color: var(--muted); }
+
+  .divider { display: flex; align-items: center; gap: 1rem; margin: 1.25rem 0; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .divider span { font-size: 0.68rem; color: var(--muted); }
+
+  .social-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .social-btn {
+    padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;
+    background: transparent; color: var(--text); font-family: var(--font-mono);
+    font-size: 0.75rem; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+  }
+  .social-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── ECOMMERCE ── */
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; }
+  .product-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  .product-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .product-img {
+    height: 160px; display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem;
+  }
+  .product-info { padding: 1rem; }
+  .product-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
+  .product-cat { font-size: 0.68rem; color: var(--muted); margin-bottom: 0.75rem; }
+  .product-bottom { display: flex; align-items: center; justify-content: space-between; }
+  .product-price { font-family: var(--font-head); font-weight: 800; color: var(--accent); font-size: 1rem; }
+  .product-old { font-size: 0.68rem; color: var(--muted); text-decoration: line-through; }
+
+  .badge { font-size: 0.62rem; padding: 2px 7px; border-radius: 20px; font-weight: 700; }
+  .badge-sale { background: rgba(255,77,109,0.15); color: var(--error); border: 1px solid rgba(255,77,109,0.3); }
+  .badge-new { background: rgba(0,229,255,0.1); color: var(--accent); border: 1px solid rgba(0,229,255,0.3); }
+
+  /* CART */
+  .cart-sidebar {
+    position: fixed; top: 56px; right: -380px; width: 380px;
+    height: calc(100vh - 56px); background: var(--surface);
+    border-left: 1px solid var(--border); z-index: 998;
+    transition: right 0.3s ease; display: flex; flex-direction: column;
+    padding: 1.5rem;
+  }
+  .cart-sidebar.open { right: 0; }
+  .cart-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 800; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; }
+  .cart-items { flex: 1; overflow-y: auto; }
+  .cart-item { display: flex; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border); align-items: center; }
+  .cart-item-icon { font-size: 1.5rem; }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-size: 0.8rem; font-weight: 700; }
+  .cart-item-price { font-size: 0.75rem; color: var(--accent); }
+  .cart-item-remove { color: var(--error); cursor: pointer; font-size: 0.75rem; padding: 2px 6px; border: 1px solid var(--error); border-radius: 4px; background: transparent; }
+  .cart-empty { text-align: center; color: var(--muted); font-size: 0.8rem; margin-top: 3rem; }
+  .cart-total { border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1rem; }
+  .cart-total-row { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.5rem; }
+  .cart-total-row.final { font-weight: 700; font-size: 0.95rem; color: var(--accent); }
+
+  .cart-btn {
+    position: relative; cursor: pointer;
+    background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.3);
+    color: var(--accent); padding: 0.4rem 0.75rem; border-radius: 6px;
+    font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700;
+  }
+  .cart-count {
+    position: absolute; top: -6px; right: -6px;
+    background: var(--accent2); color: #fff;
+    width: 18px; height: 18px; border-radius: 50%;
+    font-size: 0.6rem; display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+  }
+
+  /* ── FORMS PAGE ── */
+  .form-section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .form-section-title { font-family: var(--font-head); font-size: 1rem; font-weight: 600; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
+  select.form-input { cursor: pointer; }
+  textarea.form-input { resize: vertical; min-height: 100px; }
+  .range-wrap { display: flex; align-items: center; gap: 1rem; }
+  input[type="range"] { flex: 1; accent-color: var(--accent); }
+  .range-val { font-size: 0.8rem; color: var(--accent); min-width: 30px; text-align: center; }
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-label { font-size: 0.8rem; }
+  .toggle { position: relative; width: 40px; height: 22px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; inset: 0; background: var(--border); border-radius: 22px;
+    cursor: pointer; transition: 0.2s;
+  }
+  .toggle-slider::before {
+    content: ''; position: absolute; width: 16px; height: 16px;
+    left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: 0.2s;
+  }
+  .toggle input:checked + .toggle-slider { background: var(--accent); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+  .progress-wrap { margin: 0.75rem 0; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); margin-bottom: 6px; }
+  .progress-bar { height: 6px; background: var(--border); border-radius: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; }
+
+  /* ── SPA NAV PAGE ── */
+  .spa-layout { display: flex; gap: 0; min-height: calc(100vh - 56px); }
+  .spa-sidebar {
+    width: 220px; background: var(--surface); border-right: 1px solid var(--border);
+    padding: 1.5rem 0; flex-shrink: 0;
+  }
+  .spa-sidebar-title { font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); padding: 0 1.25rem; margin-bottom: 0.75rem; }
+  .spa-nav-item {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.6rem 1.25rem; color: var(--muted);
+    cursor: pointer; transition: all 0.15s; font-size: 0.78rem;
+    border-left: 2px solid transparent;
+  }
+  .spa-nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .spa-nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(0,229,255,0.05); }
+  .spa-content { flex: 1; padding: 2rem; overflow-y: auto; }
+  .spa-panel { display: none; animation: fadeUp 0.3s ease; }
+  .spa-panel.active { display: block; }
+  .spa-panel h3 { font-family: var(--font-head); font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem; }
+
+  /* ── AB TEST PAGE ── */
+  .ab-controls { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .ab-variants { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .variant-box {
+    border: 2px solid var(--border); border-radius: 10px; padding: 1.5rem;
+    transition: border-color 0.2s; position: relative;
+  }
+  .variant-box.selected { border-color: var(--accent); }
+  .variant-label {
+    position: absolute; top: -10px; left: 12px;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+    background: var(--bg); padding: 0 8px; color: var(--accent);
+  }
+  .variant-b .variant-label { color: var(--accent2); }
+  .variant-b { border-color: var(--border); }
+  .variant-b.selected { border-color: var(--accent2); }
+
+  .ab-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.25rem; }
+  .metric-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; text-align: center; }
+  .metric-val { font-family: var(--font-head); font-size: 1.4rem; font-weight: 800; }
+  .metric-label { font-size: 0.65rem; color: var(--muted); margin-top: 4px; letter-spacing: 0.08em; }
+  .metric-delta { font-size: 0.7rem; margin-top: 4px; }
+  .delta-up { color: var(--success); }
+  .delta-down { color: var(--error); }
+
+  /* ── SCROLL TEST ── */
+  .scroll-test-area { }
+  .scroll-section {
+    height: 200px; border: 1px solid var(--border); border-radius: 10px;
+    margin-bottom: 1rem; display: flex; align-items: center; justify-content: center;
+    background: var(--surface); font-size: 0.9rem; color: var(--muted);
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .scroll-section.in-view {
+    border-color: var(--accent); color: var(--text);
+    background: rgba(0,229,255,0.04);
+  }
+  .scroll-section.in-view::before {
+    content: '✓ IN VIEW'; position: absolute; top: 10px; right: 12px;
+    font-size: 0.65rem; color: var(--accent); font-weight: 700; letter-spacing: 0.1em;
+  }
+
+  /* ── TOAST ── */
+  .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; }
+  .toast {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.75rem 1.25rem;
+    font-size: 0.78rem; display: flex; align-items: center; gap: 0.5rem;
+    animation: slideIn 0.3s ease; min-width: 250px; max-width: 350px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .toast.success { border-color: var(--success); }
+  .toast.error { border-color: var(--error); }
+  .toast.info { border-color: var(--accent); }
+  .toast.warning { border-color: var(--warning); }
+  .toast-icon { font-size: 1rem; }
+  .toast-msg { flex: 1; }
+  .toast-close { cursor: pointer; color: var(--muted); font-size: 0.8rem; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    z-index: 9998; display: none; align-items: center; justify-content: center;
+    padding: 1rem; backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 2rem; max-width: 460px; width: 100%;
+    animation: fadeUp 0.25s ease;
+  }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+  .modal-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 800; }
+  .modal-close { cursor: pointer; color: var(--muted); font-size: 1.2rem; line-height: 1; }
+  .modal-body { color: var(--muted); font-size: 0.82rem; line-height: 1.7; margin-bottom: 1.5rem; }
+  .modal-footer { display: flex; gap: 0.75rem; justify-content: flex-end; }
+
+  /* ── LOG ── */
+  .log-box {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1rem; height: 180px; overflow-y: auto; font-size: 0.72rem; line-height: 1.8;
+  }
+  .log-entry { display: flex; gap: 0.75rem; }
+  .log-time { color: var(--muted); flex-shrink: 0; }
+  .log-msg.success { color: var(--success); }
+  .log-msg.error { color: var(--error); }
+  .log-msg.info { color: var(--accent); }
+  .log-msg.warn { color: var(--warning); }
+
+  /* ── UTILS ── */
+  .chip { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.68rem; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); }
+  .chip.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.08); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .dot.green { background: var(--success); }
+  .dot.red { background: var(--error); }
+  .dot.yellow { background: var(--warning); }
+  .dot.cyan { background: var(--accent); }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  th { text-align: left; padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); color: var(--muted); font-size: 0.68rem; letter-spacing: 0.1em; }
+  td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(42,42,61,0.5); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .overlay-dim { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 997; display: none; }
+  .overlay-dim.show { display: block; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  @media(max-width: 640px) {
+    .form-row { grid-template-columns: 1fr; }
+    .ab-variants { grid-template-columns: 1fr; }
+    .ab-metrics { grid-template-columns: 1fr 1fr; }
+    .spa-sidebar { display: none; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">QA<span>Lab</span></div>
+  <div class="nav-links">
+    <a href="#" class="active" onclick="showPage('home',this)">Home</a>
+    <a href="#" onclick="showPage('login',this)">Auth</a>
+    <a href="#" onclick="showPage('shop',this)">E-Commerce</a>
+    <a href="#" onclick="showPage('forms',this)">Forms</a>
+    <a href="#" onclick="showPage('spa',this)">SPA Nav</a>
+    <a href="#" onclick="showPage('ab',this)">A/B Test</a>
+    <a href="#" onclick="showPage('scroll',this)">Scroll</a>
+  </div>
+  <div class="nav-user">
+    <button class="cart-btn" onclick="toggleCart()">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+    <span class="nav-badge">QA</span>
+    <div class="nav-avatar">U</div>
+  </div>
+</nav>
+
+<!-- CART SIDEBAR -->
+<div class="overlay-dim" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-title">
+    Shopping Cart
+    <span style="cursor:pointer;color:var(--muted);font-size:1.2rem" onclick="toggleCart()">×</span>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">Cart is empty 🛒</div>
+  </div>
+  <div class="cart-total" id="cartTotal" style="display:none">
+    <div class="cart-total-row"><span>Subtotal</span><span id="cartSubtotal">$0</span></div>
+    <div class="cart-total-row"><span>Tax (10%)</span><span id="cartTax">$0</span></div>
+    <div class="cart-total-row final"><span>Total</span><span id="cartGrandTotal">$0</span></div>
+    <button class="btn btn-primary btn-full" style="margin-top:1rem" onclick="checkout()">Checkout →</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Modal Title</div>
+      <span class="modal-close" onclick="closeModal()">×</span>
+    </div>
+    <div class="modal-body" id="modalBody">Modal content goes here.</div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="closeModal()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ═══════════════════════ HOME PAGE ═══════════════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-tag">⚡ QA TESTING ENVIRONMENT</div>
+    <h1>Your <span class="cyan">Testing</span><br/>Ground<span class="pink">.</span></h1>
+    <p class="hero-sub">A fully functional website built for QA engineers — test auth flows, e-commerce, SPA navigation, scroll behaviour, A/B experiments and more.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="showPage('shop', document.querySelector('.nav-links a:nth-child(3)'))">Explore Shop →</button>
+      <button class="btn btn-secondary" onclick="openModal('Quick Start','Navigate using the top menu. Each section has real interactive elements — forms validate, cart works, SPA routing fires, scroll tracking runs live.')">Quick Guide</button>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-val">7</div><div class="stat-label">TEST SECTIONS</div></div>
+      <div class="stat"><div class="stat-val">12</div><div class="stat-label">FORM ELEMENTS</div></div>
+      <div class="stat"><div class="stat-val">8</div><div class="stat-label">PRODUCTS</div></div>
+      <div class="stat"><div class="stat-val">∞</div><div class="stat-label">TEST CASES</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">What's inside</div>
+      <div class="section-title">Built for QA Engineers</div>
+      <div class="section-sub">Every section is wired up with real interactions</div>
+    </div>
+    <div class="grid-3">
+      <div class="card" onclick="showPage('login', document.querySelector('.nav-links a:nth-child(2)'))">
+        <div class="card-icon">🔐</div>
+        <div class="card-title">Auth Flow</div>
+        <div class="card-desc">Login, Signup with validation, social auth buttons, remember me, inline error states.</div>
+      </div>
+      <div class="card" onclick="showPage('shop', document.querySelector('.nav-links a:nth-child(3)'))">
+        <div class="card-icon">🛍️</div>
+        <div class="card-title">E-Commerce</div>
+        <div class="card-desc">Product listing, add to cart, cart sidebar, checkout flow with order confirmation.</div>
+      </div>
+      <div class="card" onclick="showPage('forms', document.querySelector('.nav-links a:nth-child(4)'))">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Forms & Validation</div>
+        <div class="card-desc">Text, select, toggle, range slider, file upload, progress bars and live validation.</div>
+      </div>
+      <div class="card" onclick="showPage('spa', document.querySelector('.nav-links a:nth-child(5)'))">
+        <div class="card-icon">🔀</div>
+        <div class="card-title">SPA Navigation</div>
+        <div class="card-desc">Client-side routing simulation, sidebar nav, panel switching, URL-like state changes.</div>
+      </div>
+      <div class="card" onclick="showPage('ab', document.querySelector('.nav-links a:nth-child(6)'))">
+        <div class="card-icon">🧪</div>
+        <div class="card-title">A/B Testing</div>
+        <div class="card-desc">Switch between variants, track impressions, simulate conversions and view metrics.</div>
+      </div>
+      <div class="card" onclick="showPage('scroll', document.querySelector('.nav-links a:nth-child(7)'))">
+        <div class="card-icon">📜</div>
+        <div class="card-title">Scroll Tracking</div>
+        <div class="card-desc">Intersection observer, scroll depth tracking, in-view detection and event logging.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ AUTH PAGE ═══════════════════════ -->
+<div id="page-login" class="page">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <h2>QA<span style="color:var(--accent2)">Lab</span></h2>
+        <p>Test authentication flows below</p>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('login-tab','signin-tab',this)">Sign In</button>
+        <button class="tab-btn" onclick="switchTab('signup-tab','signin-tab',this)">Sign Up</button>
+      </div>
+
+      <!-- SIGN IN -->
+      <div id="signin-tab" class="tab-content active">
+        <div class="form-group">
+          <label class="form-label">EMAIL ADDRESS</label>
+          <input type="email" class="form-input" id="loginEmail" placeholder="qa@testlab.com" oninput="clearErr(this)"/>
+          <div class="form-error" id="loginEmailErr">Enter a valid email address</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">PASSWORD</label>
+          <input type="password" class="form-input" id="loginPass" placeholder="••••••••" oninput="clearErr(this)"/>
+          <div class="form-error" id="loginPassErr">Password must be at least 6 characters</div>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="rememberMe"/>
+          <label for="rememberMe">Remember me for 30 days</label>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="doLogin()">Sign In →</button>
+        <div class="divider"><span>OR CONTINUE WITH</span></div>
+        <div class="social-btns">
+          <button class="social-btn" onclick="socialAuth('Google')">🔵 Google</button>
+          <button class="social-btn" onclick="socialAuth('GitHub')">⚫ GitHub</button>
+        </div>
+        <p style="text-align:center;font-size:0.72rem;color:var(--muted);margin-top:1.25rem">
+          Use <strong style="color:var(--text)">test@qa.com</strong> / <strong style="color:var(--text)">test123</strong> to login
+        </p>
+      </div>
+
+      <!-- SIGN UP -->
+      <div id="signup-tab" class="tab-content">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">FIRST NAME</label>
+            <input type="text" class="form-input" id="signupFirst" placeholder="John" oninput="clearErr(this)"/>
+            <div class="form-error" id="signupFirstErr">Required</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">LAST NAME</label>
+            <input type="text" class="form-input" id="signupLast" placeholder="Doe" oninput="clearErr(this)"/>
+            <div class="form-error" id="signupLastErr">Required</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">EMAIL ADDRESS</label>
+          <input type="email" class="form-input" id="signupEmail" placeholder="john@example.com" oninput="clearErr(this)"/>
+          <div class="form-error" id="signupEmailErr">Enter a valid email address</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">PASSWORD</label>
+          <input type="password" class="form-input" id="signupPass" placeholder="Min 6 characters" oninput="checkPassStrength(this.value)"/>
+          <div class="form-error" id="signupPassErr">Password must be at least 6 characters</div>
+          <div style="margin-top:6px">
+            <div class="progress-bar"><div class="progress-fill" id="passStrength" style="width:0%;background:var(--error)"></div></div>
+            <div style="font-size:0.65rem;color:var(--muted);margin-top:3px" id="passStrengthLabel">Enter password</div>
+          </div>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="agreeTerms"/>
+          <label for="agreeTerms">I agree to the <span style="color:var(--accent)">Terms of Service</span></label>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="doSignup()">Create Account →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SHOP PAGE ═══════════════════════ -->
+<div id="page-shop" class="page">
+  <div class="section">
+    <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem">
+      <div>
+        <div class="section-tag">E-Commerce Testing</div>
+        <div class="section-title">Product Catalogue</div>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+        <span class="chip active" onclick="filterProducts('all',this)">All</span>
+        <span class="chip" onclick="filterProducts('electronics',this)">Electronics</span>
+        <span class="chip" onclick="filterProducts('clothing',this)">Clothing</span>
+        <span class="chip" onclick="filterProducts('food',this)">Food</span>
+      </div>
+    </div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ FORMS PAGE ═══════════════════════ -->
+<div id="page-forms" class="page">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">Forms & Validation</div>
+      <div class="section-title">All Input Types</div>
+      <div class="section-sub">Test every kind of form element and validation state</div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">📝 Text Inputs</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">FULL NAME</label>
+          <input type="text" class="form-input" placeholder="John Doe"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">PHONE NUMBER</label>
+          <input type="tel" class="form-input" placeholder="+91 9999999999"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">DATE OF BIRTH</label>
+          <input type="date" class="form-input"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">WEBSITE URL</label>
+          <input type="url" class="form-input" placeholder="https://example.com"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">MESSAGE</label>
+        <textarea class="form-input" placeholder="Write something..."></textarea>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">🔘 Select & Options</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">COUNTRY</label>
+          <select class="form-input">
+            <option>Select country</option>
+            <option>India</option><option>USA</option><option>UK</option><option>Germany</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">PLAN</label>
+          <select class="form-input">
+            <option>Free</option><option>Pro</option><option>Enterprise</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:2rem;flex-wrap:wrap;margin-top:0.5rem">
+        <div style="display:flex;gap:0.75rem;align-items:center">
+          <input type="radio" name="gender" id="male"/><label for="male" style="font-size:0.8rem">Male</label>
+          <input type="radio" name="gender" id="female"/><label for="female" style="font-size:0.8rem">Female</label>
+          <input type="radio" name="gender" id="other"/><label for="other" style="font-size:0.8rem">Other</label>
+        </div>
+        <div style="display:flex;gap:0.75rem;align-items:center">
+          <input type="checkbox" id="cb1"/><label for="cb1" style="font-size:0.8rem">Email</label>
+          <input type="checkbox" id="cb2"/><label for="cb2" style="font-size:0.8rem">SMS</label>
+          <input type="checkbox" id="cb3"/><label for="cb3" style="font-size:0.8rem">Push</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">🎚️ Range & Toggles</div>
+      <div class="form-group">
+        <label class="form-label">BUDGET RANGE</label>
+        <div class="range-wrap">
+          <input type="range" min="0" max="100" value="40" oninput="document.getElementById('rv1').textContent=this.value+'%'"/>
+          <span class="range-val" id="rv1">40%</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">PRIORITY LEVEL</label>
+        <div class="range-wrap">
+          <input type="range" min="1" max="10" value="5" oninput="document.getElementById('rv2').textContent=this.value"/>
+          <span class="range-val" id="rv2">5</span>
+        </div>
+      </div>
+      <div style="margin-top:0.75rem">
+        <div class="toggle-row">
+          <span class="toggle-label">Enable Notifications</span>
+          <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Dark Mode</span>
+          <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Auto Save</span>
+          <label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Beta Features</span>
+          <label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">📊 Progress Bars</div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Profile Completion</span><span>72%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:72%;background:var(--accent)"></div></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Storage Used</span><span>45%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:45%;background:var(--warning)"></div></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Upload Progress</span><span id="uploadPct">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="uploadBar" style="width:0%;background:var(--success)"></div></div>
+      </div>
+      <button class="btn btn-secondary btn-sm" style="margin-top:0.75rem" onclick="simulateUpload()">Simulate Upload</button>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">🔔 Toast Notifications</div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+        <button class="btn btn-sm" style="background:var(--success);color:#000" onclick="toast('✅','Changes saved successfully!','success')">Success</button>
+        <button class="btn btn-sm btn-danger" onclick="toast('❌','Something went wrong. Try again.','error')">Error</button>
+        <button class="btn btn-sm" style="background:var(--warning);color:#000" onclick="toast('⚠️','Please review before submitting.','warning')">Warning</button>
+        <button class="btn btn-sm btn-secondary" onclick="toast('ℹ️','New feature available in beta.','info')">Info</button>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">🪟 Modal Dialogs</div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+        <button class="btn btn-secondary btn-sm" onclick="openModal('Confirm Action','Are you sure you want to delete this item? This action cannot be undone.')">Delete Confirm</button>
+        <button class="btn btn-secondary btn-sm" onclick="openModal('Terms of Service','By using this service you agree to our terms. This is a test modal with scrollable content for QA validation purposes.')">Terms Modal</button>
+        <button class="btn btn-secondary btn-sm" onclick="openModal('Session Expired','Your session has expired. Please login again to continue using the application.')">Session Alert</button>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">📋 Event Log</div>
+      <div class="log-box" id="formLog">
+        <div class="log-entry"><span class="log-time">00:00</span><span class="log-msg info">Page loaded. Ready for testing.</span></div>
+      </div>
+      <button class="btn btn-secondary btn-sm" style="margin-top:0.75rem" onclick="document.getElementById('formLog').innerHTML='<div class=\'log-entry\'><span class=\'log-time\'>--:--</span><span class=\'log-msg info\'>Log cleared.</span></div>'">Clear Log</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SPA NAV PAGE ═══════════════════════ -->
+<div id="page-spa" class="page">
+  <div class="spa-layout">
+    <div class="spa-sidebar">
+      <div class="spa-sidebar-title">NAVIGATION</div>
+      <div class="spa-nav-item active" onclick="spaNav('dashboard',this)">📊 Dashboard</div>
+      <div class="spa-nav-item" onclick="spaNav('analytics',this)">📈 Analytics</div>
+      <div class="spa-nav-item" onclick="spaNav('users',this)">👥 Users</div>
+      <div class="spa-nav-item" onclick="spaNav('campaigns',this)">🚀 Campaigns</div>
+      <div class="spa-nav-item" onclick="spaNav('settings',this)">⚙️ Settings</div>
+      <div class="spa-nav-item" onclick="spaNav('reports',this)">📄 Reports</div>
+    </div>
+    <div class="spa-content">
+
+      <div id="spa-dashboard" class="spa-panel active">
+        <h3>Dashboard</h3>
+        <div class="ab-metrics" style="margin-bottom:1.5rem">
+          <div class="metric-box"><div class="metric-val" style="color:var(--accent)">2.4K</div><div class="metric-label">VISITORS</div></div>
+          <div class="metric-box"><div class="metric-val" style="color:var(--success)">18.3%</div><div class="metric-label">CONVERSION</div></div>
+          <div class="metric-box"><div class="metric-val" style="color:var(--warning)">3m 12s</div><div class="metric-label">AVG SESSION</div></div>
+          <div class="metric-box"><div class="metric-val" style="color:var(--accent2)">42%</div><div class="metric-label">BOUNCE RATE</div></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>PAGE</th><th>VIEWS</th><th>UNIQUE</th><th>STATUS</th></tr></thead>
+            <tbody>
+              <tr><td>/home</td><td>1,204</td><td>834</td><td><span class="dot green"></span> Live</td></tr>
+              <tr><td>/shop</td><td>876</td><td>541</td><td><span class="dot green"></span> Live</td></tr>
+              <tr><td>/checkout</td><td>312</td><td>201</td><td><span class="dot yellow"></span> Testing</td></tr>
+              <tr><td>/signup</td><td>188</td><td>188</td><td><span class="dot cyan"></span> Active</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="spa-analytics" class="spa-panel">
+        <h3>Analytics</h3>
+        <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1.5rem">Real-time analytics panel — simulating SPA page transition.</p>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">📥 Traffic Sources</div><br/>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:2">Organic Search: <span style="color:var(--accent)">42%</span><br/>Direct: <span style="color:var(--accent)">28%</span><br/>Referral: <span style="color:var(--accent)">18%</span><br/>Social: <span style="color:var(--accent)">12%</span></div>
+          </div>
+          <div class="card"><div class="card-title">🌍 Top Countries</div><br/>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:2">India: <span style="color:var(--accent)">34%</span><br/>USA: <span style="color:var(--accent)">26%</span><br/>UK: <span style="color:var(--accent)">14%</span><br/>Germany: <span style="color:var(--accent)">10%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="spa-users" class="spa-panel">
+        <h3>Users</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>NAME</th><th>EMAIL</th><th>ROLE</th><th>STATUS</th></tr></thead>
+            <tbody>
+              <tr><td>Alice Kumar</td><td>alice@qa.com</td><td>Admin</td><td><span class="dot green"></span> Active</td></tr>
+              <tr><td>Rahul M</td><td>rahul@qa.com</td><td>QA</td><td><span class="dot green"></span> Active</td></tr>
+              <tr><td>Sara J</td><td>sara@qa.com</td><td>Dev</td><td><span class="dot yellow"></span> Away</td></tr>
+              <tr><td>Test User</td><td>test@qa.com</td><td>Viewer</td><td><span class="dot red"></span> Offline</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="spa-campaigns" class="spa-panel">
+        <h3>Campaigns</h3>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">🧪 Campaign A</div><div class="card-desc">A/B test on homepage CTA — Running since 7 days. 42% conversion lift.</div><br/><span class="dot green"></span> <span style="font-size:0.72rem;color:var(--success)">Running</span></div>
+          <div class="card"><div class="card-title">🎯 Campaign B</div><div class="card-desc">Multipage personalisation — Pending activation on 3 pages.</div><br/><span class="dot yellow"></span> <span style="font-size:0.72rem;color:var(--warning)">Pending</span></div>
+          <div class="card"><div class="card-title">📊 MEG Group 1</div><div class="card-desc">Mutual exclusion group — Campaigns 3, 4, 5 are in this group.</div><br/><span class="dot cyan"></span> <span style="font-size:0.72rem;color:var(--accent)">Draft</span></div>
+          <div class="card"><div class="card-title">🚀 Campaign C</div><div class="card-desc">Feature rollout using feature flags — 10% traffic allocation.</div><br/><span class="dot green"></span> <span style="font-size:0.72rem;color:var(--success)">Running</span></div>
+        </div>
+      </div>
+
+      <div id="spa-settings" class="spa-panel">
+        <h3>Settings</h3>
+        <div class="form-section" style="margin-bottom:1rem">
+          <div class="toggle-row"><span class="toggle-label">Email Notifications</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><span class="toggle-label">Two Factor Auth</span><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><span class="toggle-label">Public Profile</span><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><span class="toggle-label">Beta Access</span><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="toast('✅','Settings saved!','success')">Save Settings</button>
+      </div>
+
+      <div id="spa-reports" class="spa-panel">
+        <h3>Reports</h3>
+        <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1.5rem">Download and export test reports.</p>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+          <button class="btn btn-secondary btn-sm" onclick="toast('📄','Report exported as CSV','info')">Export CSV</button>
+          <button class="btn btn-secondary btn-sm" onclick="toast('📊','Report exported as PDF','info')">Export PDF</button>
+          <button class="btn btn-secondary btn-sm" onclick="toast('📧','Report sent to email','success')">Email Report</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ A/B TEST PAGE ═══════════════════════ -->
+<div id="page-ab" class="page">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">Experimentation</div>
+      <div class="section-title">A/B Test Simulator</div>
+      <div class="section-sub">Switch variants and track impression/conversion metrics</div>
+    </div>
+
+    <div class="ab-controls">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px">ACTIVE VARIANT</div>
+          <div style="display:flex;gap:0.5rem">
+            <button class="btn btn-primary btn-sm" onclick="setVariant('A')">Variant A</button>
+            <button class="btn btn-sm" style="background:var(--accent2);color:#fff" onclick="setVariant('B')">Variant B</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:0.5rem">
+          <button class="btn btn-secondary btn-sm" onclick="resetAB()">Reset</button>
+          <button class="btn btn-success btn-sm" onclick="recordConversion()">Record Conversion</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ab-variants">
+      <div class="variant-box selected" id="variantA">
+        <div class="variant-label">VARIANT A — CONTROL</div>
+        <div style="padding-top:0.5rem">
+          <h3 style="font-family:var(--font-head);font-size:1.2rem;margin-bottom:0.75rem">Get Started Today</h3>
+          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1.25rem">Sign up for free and explore our platform.</p>
+          <button class="btn btn-primary btn-sm" onclick="recordImpression('A')">Get Started →</button>
+        </div>
+      </div>
+      <div class="variant-box" id="variantB">
+        <div class="variant-label" style="color:var(--accent2)">VARIANT B — TREATMENT</div>
+        <div style="padding-top:0.5rem">
+          <h3 style="font-family:var(--font-head);font-size:1.2rem;margin-bottom:0.75rem">Start Free — No Credit Card</h3>
+          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1.25rem">Join 21M+ websites. Free plan available.</p>
+          <button class="btn btn-sm" style="background:var(--accent2);color:#fff" onclick="recordImpression('B')">Try For Free →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ab-metrics" style="margin-top:1.5rem">
+      <div class="metric-box"><div class="metric-val" id="impA" style="color:var(--accent)">0</div><div class="metric-label">A IMPRESSIONS</div></div>
+      <div class="metric-box"><div class="metric-val" id="impB" style="color:var(--accent2)">0</div><div class="metric-label">B IMPRESSIONS</div></div>
+      <div class="metric-box"><div class="metric-val" id="convRate" style="color:var(--success)">0%</div><div class="metric-label">CONV RATE</div></div>
+      <div class="metric-box"><div class="metric-val" id="totalConv" style="color:var(--warning)">0</div><div class="metric-label">CONVERSIONS</div></div>
+    </div>
+
+    <div class="form-section" style="margin-top:1.5rem">
+      <div class="form-section-title">📋 Event Log</div>
+      <div class="log-box" id="abLog">
+        <div class="log-entry"><span class="log-time">--:--</span><span class="log-msg info">A/B test ready. Click variant buttons to record events.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCROLL PAGE ═══════════════════════ -->
+<div id="page-scroll" class="page">
+  <div class="section">
+    <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap">
+      <div>
+        <div class="section-tag">Scroll Tracking</div>
+        <div class="section-title">Intersection Observer Test</div>
+        <div class="section-sub">Scroll down — sections light up as they enter the viewport</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:0.72rem;color:var(--muted)">SCROLL DEPTH</div>
+        <div style="font-family:var(--font-head);font-size:1.8rem;font-weight:800;color:var(--accent)" id="scrollDepth">0%</div>
+      </div>
+    </div>
+
+    <div class="scroll-test-area" id="scrollSections"></div>
+
+    <div class="form-section" style="margin-top:1.5rem">
+      <div class="form-section-title">📋 Scroll Event Log</div>
+      <div class="log-box" id="scrollLog">
+        <div class="log-entry"><span class="log-time">--:--</span><span class="log-msg info">Scroll tracking active. Scroll the page to trigger events.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── UTILS ──
+function now() {
+  const d = new Date();
+  return `${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+}
+
+function addLog(boxId, msg, type='info') {
+  const box = document.getElementById(boxId);
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `<span class="log-time">${now()}</span><span class="log-msg ${type}">${msg}</span>`;
+  box.appendChild(entry);
+  box.scrollTop = box.scrollHeight;
+}
+
+function toast(icon, msg, type='info') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-msg">${msg}</span><span class="toast-close" onclick="this.parentElement.remove()">×</span>`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+  addLog('formLog', `Toast [${type}]: ${msg}`, type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'warning' ? 'warn' : 'info');
+}
+
+function openModal(title, body) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').textContent = body;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+// ── PAGE NAVIGATION ──
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+// ── TAB SWITCH ──
+function switchTab(tabId, group, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── CART ──
+let cart = [];
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('show');
+}
+function addToCart(product) {
+  const existing = cart.find(i => i.name === product.name);
+  if (existing) { existing.qty++; } else { cart.push({...product, qty:1}); }
+  updateCart();
+  toast('🛒', `${product.name} added to cart`, 'success');
+}
+function removeFromCart(name) {
+  cart = cart.filter(i => i.name !== name);
+  updateCart();
+}
+function updateCart() {
+  const count = cart.reduce((s,i) => s+i.qty, 0);
+  document.getElementById('cartCount').textContent = count;
+  const box = document.getElementById('cartItems');
+  const totalBox = document.getElementById('cartTotal');
+  if (!cart.length) {
+    box.innerHTML = '<div class="cart-empty">Cart is empty 🛒</div>';
+    totalBox.style.display = 'none'; return;
+  }
+  box.innerHTML = cart.map(i => `
+    <div class="cart-item">
+      <span class="cart-item-icon">${i.icon}</span>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${i.name} ×${i.qty}</div>
+        <div class="cart-item-price">$${(i.price * i.qty).toFixed(2)}</div>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart('${i.name}')">×</button>
+    </div>`).join('');
+  const sub = cart.reduce((s,i) => s + i.price * i.qty, 0);
+  const tax = sub * 0.1;
+  document.getElementById('cartSubtotal').textContent = '$' + sub.toFixed(2);
+  document.getElementById('cartTax').textContent = '$' + tax.toFixed(2);
+  document.getElementById('cartGrandTotal').textContent = '$' + (sub+tax).toFixed(2);
+  totalBox.style.display = 'block';
+}
+function checkout() {
+  cart = []; updateCart(); toggleCart();
+  toast('✅', 'Order placed successfully! Order #' + Math.floor(Math.random()*99999), 'success');
+}
+
+// ── PRODUCTS ──
+const products = [
+  { name:'Wireless Headphones', cat:'electronics', icon:'🎧', price:79.99, old:99.99, badge:'sale' },
+  { name:'Mechanical Keyboard', cat:'electronics', icon:'⌨️', price:129.00, old:null, badge:'new' },
+  { name:'Smart Watch', cat:'electronics', icon:'⌚', price:199.99, old:249.99, badge:'sale' },
+  { name:'USB-C Hub', cat:'electronics', icon:'🔌', price:39.99, old:null, badge:null },
+  { name:'Cotton T-Shirt', cat:'clothing', icon:'👕', price:19.99, old:null, badge:'new' },
+  { name:'Denim Jacket', cat:'clothing', icon:'🧥', price:59.99, old:79.99, badge:'sale' },
+  { name:'Dark Chocolate', cat:'food', icon:'🍫', price:4.99, old:null, badge:null },
+  { name:'Green Tea Pack', cat:'food', icon:'🍵', price:12.99, old:null, badge:'new' },
+];
+
+function renderProducts(filter='all') {
+  const grid = document.getElementById('productsGrid');
+  const filtered = filter === 'all' ? products : products.filter(p => p.cat === filter);
+  grid.innerHTML = filtered.map(p => `
+    <div class="product-card">
+      <div class="product-img" style="background:var(--surface2)">${p.icon}</div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-cat">${p.cat} ${p.badge ? `<span class="badge badge-${p.badge}">${p.badge.toUpperCase()}</span>` : ''}</div>
+        <div class="product-bottom">
+          <div><div class="product-price">$${p.price}</div>${p.old ? `<div class="product-old">$${p.old}</div>` : ''}</div>
+          <button class="btn btn-primary btn-sm" onclick='addToCart(${JSON.stringify(p)})'>Add</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function filterProducts(cat, el) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderProducts(cat);
+}
+renderProducts();
+
+// ── AUTH ──
+function clearErr(input) {
+  input.classList.remove('error');
+  const err = document.getElementById(input.id + 'Err');
+  if (err) err.classList.remove('show');
+}
+function showErr(id) {
+  document.getElementById(id).classList.add('error');
+  const err = document.getElementById(id + 'Err');
+  if (err) err.classList.add('show');
+}
+function doLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPass').value;
+  let valid = true;
+  if (!email || !email.includes('@')) { showErr('loginEmail'); valid = false; }
+  if (!pass || pass.length < 6) { showErr('loginPass'); valid = false; }
+  if (!valid) return;
+  if (email === 'test@qa.com' && pass === 'test123') {
+    toast('✅', 'Login successful! Welcome back.', 'success');
+    addLog('formLog', 'Login success: ' + email, 'success');
+  } else {
+    toast('❌', 'Invalid credentials. Use test@qa.com / test123', 'error');
+    addLog('formLog', 'Login failed: wrong credentials', 'error');
+  }
+}
+function doSignup() {
+  const f = document.getElementById('signupFirst').value;
+  const l = document.getElementById('signupLast').value;
+  const e = document.getElementById('signupEmail').value;
+  const p = document.getElementById('signupPass').value;
+  const agree = document.getElementById('agreeTerms').checked;
+  let valid = true;
+  if (!f) { showErr('signupFirst'); valid = false; }
+  if (!l) { showErr('signupLast'); valid = false; }
+  if (!e || !e.includes('@')) { showErr('signupEmail'); valid = false; }
+  if (!p || p.length < 6) { showErr('signupPass'); valid = false; }
+  if (!agree) { toast('⚠️','Please agree to the Terms of Service','warning'); valid = false; }
+  if (!valid) return;
+  toast('✅', `Account created for ${f} ${l}!`, 'success');
+}
+function socialAuth(provider) {
+  toast('ℹ️', `Redirecting to ${provider} OAuth...`, 'info');
+}
+function checkPassStrength(val) {
+  const bar = document.getElementById('passStrength');
+  const label = document.getElementById('passStrengthLabel');
+  if (!val) { bar.style.width='0%'; label.textContent='Enter password'; return; }
+  let score = 0;
+  if (val.length >= 6) score++;
+  if (val.length >= 10) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const levels = [
+    { w:'20%', c:'var(--error)', t:'Very Weak' },
+    { w:'40%', c:'var(--error)', t:'Weak' },
+    { w:'60%', c:'var(--warning)', t:'Fair' },
+    { w:'80%', c:'var(--accent)', t:'Strong' },
+    { w:'100%', c:'var(--success)', t:'Very Strong' },
+  ];
+  const l = levels[Math.min(score, 4)];
+  bar.style.width = l.w; bar.style.background = l.c; label.textContent = l.t;
+}
+
+// ── UPLOAD SIMULATION ──
+function simulateUpload() {
+  let pct = 0;
+  const bar = document.getElementById('uploadBar');
+  const label = document.getElementById('uploadPct');
+  const interval = setInterval(() => {
+    pct += Math.floor(Math.random() * 12) + 3;
+    if (pct >= 100) { pct = 100; clearInterval(interval); toast('✅','Upload complete!','success'); }
+    bar.style.width = pct + '%';
+    label.textContent = pct + '%';
+  }, 150);
+}
+
+// ── SPA NAV ──
+function spaNav(panel, el) {
+  document.querySelectorAll('.spa-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.spa-nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('spa-' + panel).classList.add('active');
+  el.classList.add('active');
+  history.pushState({}, '', '#/spa/' + panel);
+}
+
+// ── A/B TEST ──
+let abData = { A: 0, B: 0, conv: 0, active: 'A' };
+function setVariant(v) {
+  abData.active = v;
+  document.getElementById('variantA').classList.toggle('selected', v==='A');
+  document.getElementById('variantB').classList.toggle('selected', v==='B');
+  addLog('abLog', `Switched to Variant ${v}`, 'info');
+  recordImpression(v);
+}
+function recordImpression(v) {
+  abData[v]++;
+  document.getElementById('impA').textContent = abData.A;
+  document.getElementById('impB').textContent = abData.B;
+  addLog('abLog', `Impression recorded — Variant ${v}`, 'info');
+  updateConvRate();
+}
+function recordConversion() {
+  abData.conv++;
+  document.getElementById('totalConv').textContent = abData.conv;
+  addLog('abLog', `Conversion recorded — Variant ${abData.active}`, 'success');
+  updateConvRate();
+}
+function updateConvRate() {
+  const total = abData.A + abData.B;
+  const rate = total ? ((abData.conv / total) * 100).toFixed(1) : 0;
+  document.getElementById('convRate').textContent = rate + '%';
+}
+function resetAB() {
+  abData = { A:0, B:0, conv:0, active:'A' };
+  ['impA','impB','totalConv'].forEach(id => document.getElementById(id).textContent = '0');
+  document.getElementById('convRate').textContent = '0%';
+  document.getElementById('variantA').classList.add('selected');
+  document.getElementById('variantB').classList.remove('selected');
+  addLog('abLog', 'A/B metrics reset', 'warn');
+}
+
+// ── SCROLL TRACKING ──
+const scrollSectionNames = [
+  'Section 1 — Hero Block','Section 2 — Feature Cards',
+  'Section 3 — Testimonials','Section 4 — Pricing Table',
+  'Section 5 — Call to Action','Section 6 — Footer',
+];
+const container = document.getElementById('scrollSections');
+scrollSectionNames.forEach((name, i) => {
+  const div = document.createElement('div');
+  div.className = 'scroll-section';
+  div.id = 'scroll-sec-' + i;
+  div.textContent = name;
+  container.appendChild(div);
+});
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in-view');
+      addLog('scrollLog', `Entered view: ${entry.target.textContent.replace('✓ IN VIEW','').trim()}`, 'success');
+    }
+  });
+}, { threshold: 0.4 });
+
+document.querySelectorAll('.scroll-section').forEach(s => observer.observe(s));
+
+window.addEventListener('scroll', () => {
+  const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  const el = document.getElementById('scrollDepth');
+  if (el) el.textContent = Math.min(100, Math.round(scrolled)) + '%';
+});
+</script>
+</body>
+</html>
